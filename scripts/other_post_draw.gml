@@ -1,0 +1,1 @@
+draw_debug_text(x, y+10, string(numb_poison));
