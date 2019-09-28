@@ -70,3 +70,48 @@ if (attack == AT_DSPECIAL){
     can_fast_fall = false;
     can_move = false
 }
+
+// Moves that get hitstun bonus via the numbing poison stacks
+if (attack == AT_DTILT)
+{
+    set_hitbox_value(AT_DTILT, 1, HG_HITSTUN_MULTIPLIER, 1+(.05*hit_player_obj.numb_poison));
+}
+
+// Strong extension criteria check
+
+if (attack == AT_FSTRONG && has_hit_player && hit_player_obj.last_hbox_num != 2)
+{
+    if(hit_player_obj.numb_poison == 5 )
+    {
+        if(window == 2 && window_timer == 1)
+            sound_play(asset_get("sfx_blow_heavy2"));
+        set_attack_value(AT_FSTRONG, AG_NUM_WINDOWS, 8);
+        set_hitbox_value(AT_FSTRONG, 2, HG_HITBOX_GROUP, 0);
+         
+        set_window_value(AT_FSTRONG, 4, AG_WINDOW_TYPE, 1);
+        set_window_value(AT_FSTRONG, 4, AG_WINDOW_LENGTH, 15);
+        set_window_value(AT_FSTRONG, 4, AG_WINDOW_ANIM_FRAMES, 1);
+        set_window_value(AT_FSTRONG, 4, AG_WINDOW_ANIM_FRAME_START, 8);
+
+        with (asset_get("oPlayer")) {
+            if (hitpause && other.window == 5 && state_cat == SC_HITSTUN && hit_player_obj == other.id
+            && last_attack == other.attack && state != PS_FROZEN){
+                x += (other.x+80*other.spr_dir - x)/8;
+                if (free){
+                    y += (other.y - y) / 5;
+                }
+            }
+        }
+    }
+
+    if(window == 7)
+    {
+        reset_hitbox_value(AT_FSTRONG, 1, HG_HIT_SFX);
+        reset_window_value(AT_FSTRONG, 4, AG_WINDOW_TYPE);
+        reset_window_value(AT_FSTRONG, 4, AG_WINDOW_LENGTH);
+        reset_window_value(AT_FSTRONG, 4, AG_WINDOW_ANIM_FRAMES);
+        reset_window_value(AT_FSTRONG, 4, AG_WINDOW_ANIM_FRAME_START);
+        reset_hitbox_value(AT_FSTRONG, 2, HG_HITBOX_GROUP);
+        reset_attack_value(AT_FSTRONG, AG_NUM_WINDOWS);
+    }
+}
